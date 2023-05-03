@@ -1,7 +1,7 @@
 const needle = require("needle");
 const cheerio = require("cheerio");
 const TurndownService = require('turndown');
-
+const ObjectsToCsv = require('objects-to-csv');
 
 const scrapedResults = [];
 
@@ -87,9 +87,18 @@ async function scrapedArticle(articlesHeaders) {
   );
 }
 
+async function createCsvFile() {
+  const csv = new ObjectsToCsv(scrapedResults);
+
+  await csv.toDisk('./test.csv');
+
+  console.log(await csv.toString());
+}
+
 async function main () {
   const articlesHeaders = await scrapedHeader();
-  const articlesFullData = await scrapedArticle(articlesHeaders);
+  await scrapedArticle(articlesHeaders);
+  await createCsvFile();
 
   console.log(scrapedResults)
 }
